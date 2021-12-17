@@ -30,9 +30,18 @@ export default {
       return new Promise((resolve, reject) => {
           axios.post('/auth/login', this.form)
                 .then((result) => {
-                  // console.log(result['data']['access_token'])
-                  this.local = result['data']['access_token'];
-                  localStorage.setItem('access_token', this.local);
+                  if  (result.status == 200) {
+                    this.local = result['data']['access_token'];
+                    localStorage.setItem('access_token', this.local);
+
+                    axios.post('/auth/me')
+                    .then(result => {
+                      console.log(result);
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    })
+                  }
                 })
                 .catch(error => {
                   console.log(error)

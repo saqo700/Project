@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -97,12 +99,27 @@ class AuthController extends Controller
 
     public function register(Request $request) {
 
-        $data = $request->only('name','email','password');
+        $ver_token = Str::random(128);
+
+        $data = $request->only('name', 'email', 'password');
+
+        $data["verification_token"] = $ver_token;
 
         $user = User::create($data);
-
-        return response()->json(['data' => 'hn']);
-
-
+        if ($user) {
+            $this->emailVerification($user, $ver_token);
+            return response()->json(['data' => 'Jan axper']);
+        }
+        return response()->json(['error' => 'error axper']);
+    }
+    /**
+     * @param User $user
+     * @param $token
+     */
+    public function emailVerification(User $user, $token)
+    {
+        Mail::send('mail.verify', ['user' => $user, 'token' => $token], function ($m) use ($user) {
+            $m->to($user->email, $user->name)->subject('Please Verify your Email');
+        });
     }
 }
