@@ -28,16 +28,17 @@ export default {
   },
   methods: {
     sendToBack() {
-      return new Promise((resolve, reject) => {
-        console.log('asdasdsa')
-        axios.post('/register', this.form)
-          .then((result) => {
-            console.log(result)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      })
+      this.$store
+        .dispatch('REGISTER_USER', this.form)
+        .then(result => {
+          if (result) {
+            alert(result.message)
+            this.$router.push({name: "Login"})
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
     }
   }
 }

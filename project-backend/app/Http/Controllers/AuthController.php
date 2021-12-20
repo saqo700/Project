@@ -108,7 +108,7 @@ class AuthController extends Controller
         $user = User::create($data);
         if ($user) {
             $this->emailVerification($user, $ver_token);
-            return response()->json(['data' => 'Jan axper']);
+            return response()->json(['message' => 'Jan axper']);
         }
         return response()->json(['error' => 'error axper']);
     }
